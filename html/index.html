@@ -1,1 +1,25 @@
-HELLO WORLD!
+<style>
+    .btn{
+        border: 1px solid black;
+        padding: 5px;
+        display: inline-block;
+    }
+</style>
+<h1>Hello World</h1>
+<form id="myform">
+    <input type="text" name="user" placeholder="User Name">
+    <input type="text" name="pass" placeholder="Password">
+</form>
+<div class="btn">Click Me!</div>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous">
+</script>
+<script>
+    $(document).ready(function(){
+        $('.btn').click(function(){
+            $.post('/users',$('#myform').serialize())
+            .done(function(data){
+                console.log(data);
+            })
+        })
+    })
+</script>
