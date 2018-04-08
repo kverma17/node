@@ -6,6 +6,9 @@
     }
 </style>
 <h1>Hello World</h1>
+<ul id="mylist">
+    ID  Username    Password
+</ul>
 <form id="myform">
     <input type="text" name="user" placeholder="User Name">
     <input type="text" name="pass" placeholder="Password">
@@ -15,6 +18,12 @@
 </script>
 <script>
     $(document).ready(function(){
+        $.getJSON('/users',function(data){
+            for(let item of data.users  ){
+                let newList = '<li>'+item.id+'  '+item.user+'  '+item.pass+'</li>';
+                $('#mylist').append(newList);
+            }
+        })
         $('.btn').click(function(){
             $.post('/users',$('#myform').serialize())
             .done(function(data){
