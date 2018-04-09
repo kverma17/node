@@ -4,31 +4,83 @@
         padding: 5px;
         display: inline-block;
     }
+    .editBtn{
+        display: none;
+    }
 </style>
 <h1>Hello World</h1>
-<ul id="mylist">
-    ID  Username    Password
-</ul>
+<ul id="mylist"></ul>
 <form id="myform">
     <input type="text" name="user" placeholder="User Name">
     <input type="text" name="pass" placeholder="Password">
+    <input type="text" name="id" placeholder="Id">
 </form>
 <div class="btn">Click Me!</div>
+<div class="editBtn">Save</div>
 <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous">
 </script>
 <script>
     $(document).ready(function(){
-        $.getJSON('/users',function(data){
-            for(let item of data.users  ){
-                let newList = '<li>'+item.id+'  '+item.user+'  '+item.pass+'</li>';
-                $('#mylist').append(newList);
-            }
+        buildPage();
+        $('#mylist').on('click','.remove',function(){
+            let user_id = $(this).parent().data('id').id;
+            $.ajax({
+                url:'/users/'+user_id,
+                type:'DELETE',
+                success:function(rep){
+                    console.log(rep);
+                    buildPage();
+                }
+            })
         })
         $('.btn').click(function(){
             $.post('/users',$('#myform').serialize())
             .done(function(data){
                 console.log(data);
+                buildPage();
             })
         })
+        $('#mylist').on('click','.edit',function(){
+            let data = $(this).parent().data('id');
+            $('input[name="id"]').val(data.id);
+            $('input[name="user"]').val(data.user);
+            $('input[name="pass"]').val(data.pass);
+            $('.editBtn').show();
+            $('.btn').hide();
+        })
+        $('.editBtn').click(function(){
+            console.log($('input[name="id"]').val());
+            $.ajax({
+                url:'/users/'+$('input[name="id"]').val(),
+                type:'PUT',
+                data: $('#myform').serialize(),
+                success:function(rep){
+                    console.log(rep);
+                    buildPage();
+                }
+            })
+            $('.editBtn').hide();
+            $('.btn').show();
+        })
     })
+    function buildPage(){
+        $('#mylist').html('');
+        $.getJSON('/users',function(data){
+            for(let item of data.users  ){
+                let nbsp_space = '&nbsp;&nbsp;&nbsp;';
+                let anchor = '<a href="/users/'+item.id+ '"target="_blank">'+item.id+'</a>';
+                let rm_span = '<span class="remove">X</span>';
+                let edit_span = '<span class="edit">Edit</span>';
+                var newList_str = '<li>'+item.user + nbsp_space +
+                                        anchor + nbsp_space +
+                                        rm_span + nbsp_space +
+                                        edit_span+'</li>';
+                var newList = $(newList_str);
+                // console.log(newList);
+                newList.data('id',item);
+                $('#mylist').append(newList);
+            }
+        })
+        $('.editBtn').hide();
+    }
 </script>

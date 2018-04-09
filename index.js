@@ -43,7 +43,7 @@ app.put('/users/:id',function(req,res){
 app.delete('/users/:id',function(req,res){
     console.log(req.params);
     let temp = data.users.indexOf(getRow(req.params.id));
-    if(temp){
+    if(temp != -1){
         data.users.splice(temp,1);
         res.write('Deleted id ',req.params.id);
     }else{
