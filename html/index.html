@@ -7,13 +7,16 @@
     .editBtn{
         display: none;
     }
+    .hidden-id{
+        display: none;
+    }
 </style>
 <h1>Hello World</h1>
 <ul id="mylist"></ul>
 <form id="myform">
     <input type="text" name="user" placeholder="User Name">
     <input type="text" name="pass" placeholder="Password">
-    <input type="text" name="id" placeholder="Id">
+    <input type="text" class="hidden-id" name="id" placeholder="Id">
 </form>
 <div class="btn">Click Me!</div>
 <div class="editBtn">Save</div>
@@ -42,6 +45,7 @@
         })
         $('#mylist').on('click','.edit',function(){
             let data = $(this).parent().data('id');
+            $('input[name="id"]').show();
             $('input[name="id"]').val(data.id);
             $('input[name="user"]').val(data.user);
             $('input[name="pass"]').val(data.pass);
@@ -61,6 +65,9 @@
             })
             $('.editBtn').hide();
             $('.btn').show();
+            $('input[name="id"]').hide();
+            $('input[name="user"]').val('');
+            $('input[name="pass"]').val('');
         })
     })
     function buildPage(){
